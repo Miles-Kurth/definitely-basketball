@@ -31,6 +31,14 @@ ev3 = EV3Brick()
 # Initialize motors
 yeet_motor = Motor(Port.A)
 
+
+# At start
+ev3.speaker.set_volume(40); #ev3.speaker.beep(660,200)
+ev3.speaker.beep(440)
+
+
+# CODE BELOW
+
 yeet_motor.run(1000)
 
 wait(3000)
