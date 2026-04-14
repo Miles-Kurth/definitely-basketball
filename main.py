@@ -29,7 +29,8 @@ class LaserSensor:
 ev3 = EV3Brick()
 
 # Initialize motors
-yeet_motor = Motor(Port.A)
+motor1 = Motor(Port.A)
+motor2 = Motor(Port.B)
 
 # Initialize sensors
 button = TouchSensor(Port.S1)
@@ -38,6 +39,14 @@ button = TouchSensor(Port.S1)
 # At start
 ev3.speaker.set_volume(40); #ev3.speaker.beep(660,200)
 ev3.speaker.beep(440)
+
+def run():
+    motor1.dc(100)
+    motor2.dc(-100)
+
+def brake():
+    motor1.brake()
+    motor2.brake()
 
 
 # CODE BELOW
@@ -48,11 +57,11 @@ isRunning = False
 while True:
     if (button.pressed()):
         if (isRunning == False):
-            yeet_motor.dc(100)
+            run()
         isRunning = True
     else:
         if (isRunning == True):
-            yeet_motor.brake()
+            brake()
         isRunning = False
 
 
