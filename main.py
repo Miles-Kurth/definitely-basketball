@@ -8,6 +8,7 @@ from pybricks.robotics import DriveBase
 from pybricks.iodevices import I2CDevice
 import time
 import sys
+import math
 
 
 class LaserSensor:
@@ -40,9 +41,12 @@ button = TouchSensor(Port.S1)
 ev3.speaker.set_volume(40); #ev3.speaker.beep(660,200)
 ev3.speaker.beep(440)
 
+
+speed = 7
+
 def run():
-    motor1.dc(-100)
-    motor2.dc(100)
+    motor1.dc(-speed)
+    motor2.dc(speed)
 
 def brake():
     motor1.brake()
@@ -53,15 +57,22 @@ def brake():
 
 isRunning = False
 
+
 while True:
+    if (speed > 100):
+        speed = 100
+    print(speed)
+
+    run()
+
     if (button.pressed()):
-        if (isRunning == False):
-            run()
-        isRunning = True
+        speed += 0.03 + (speed *0.001)
     else:
-        if (isRunning == True):
-            brake()
-        isRunning = False
+        speed += -0.2
+        if (speed <= 7):
+            speed = 7
+            brake()        
+
 
 
 
