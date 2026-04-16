@@ -41,8 +41,8 @@ ev3.speaker.set_volume(40); #ev3.speaker.beep(660,200)
 ev3.speaker.beep(440)
 
 def run():
-    motor1.dc(100)
-    motor2.dc(-100)
+    motor1.dc(-100)
+    motor2.dc(100)
 
 def brake():
     motor1.brake()
@@ -52,7 +52,6 @@ def brake():
 # CODE BELOW
 
 isRunning = False
-
 
 while True:
     if (button.pressed()):
