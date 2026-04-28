@@ -123,15 +123,14 @@ def touchingEdge(x,y):
 def drawPixel(): # to black
     x = random.randint(0,SCREENWIDTH)
     y = random.randint(0,SCREENHEIGHT)
-    ev3.screen.draw_pixel(x,y,Color.BLACK)
-    ev3.screen.draw_box(1,1,SCREENWIDTH,SCREENHEIGHT,0,False)
+    pixels[y][x].setColor(Color.BLACK)
+    drawScreenBorder()
 
 def erasePixel(): # to white
     x = random.randint(0,SCREENWIDTH)
     y = random.randint(0,SCREENHEIGHT)
-    ev3.screen.draw_pixel(x,y,Color.WHITE)
-    ev3.screen.draw_box(1,1,SCREENWIDTH,SCREENHEIGHT,0,False)
-
+    pixels[y][x].setColor(Color.WHITE)
+    drawScreenBorder()
 def togglePixel(pixel):
     if (pixel.getColor() == Color.WHITE):
         pixel.setColor(Color.WHITE)
@@ -152,6 +151,8 @@ pixels = []
 ev3.screen.clear()
 ev3.screen.print("loading...")
 
+loadingPitch = 250
+
 
 for y in range(SCREENHEIGHT):
     row = []
@@ -159,7 +160,9 @@ for y in range(SCREENHEIGHT):
         ev3.screen.draw_pixel(x,y,Color.BLACK)
         pixel = Pixel(x, y, Color.WHITE)
         row.append(pixel)
+        loadingPitch += halfStep / (SCREENWIDTH/2)
     row.append(y)
+    loadingPitch += halfStep * 5
 #end loop
 
 clearScreen()
