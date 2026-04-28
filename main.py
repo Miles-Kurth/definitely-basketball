@@ -7,7 +7,6 @@ from pybricks.tools import wait
 from pybricks.robotics import DriveBase
 from pybricks.iodevices import I2CDevice
 from pybricks.parameters import Color
-from decimal import *
 import time
 import sys
 import math
@@ -84,14 +83,11 @@ def fan():
 
 
 
-def cutDecimal(num, keepPlaces):
-    s = "0." 
-    for i in range(keepPlaces):
-        s += "0"
-    s += "1"
-
-    num2 = num - (num % float(s))
-    return num2
+def cutDecimal(numStr, keepPlaces):
+    if float(numStr) < 10:
+        return " " + numStr[0:2 + keepPlaces]
+    else:
+        return numStr[0:3 + keepPlaces]
 
 
 def clearScreen():
@@ -157,6 +153,7 @@ def togglePixel(pixel):
         pixel.setColor(Color.WHITE)
 
 
+
 # At start
 ev3.speaker.set_volume(40); #ev3.speaker.beep(660,200)
 ev3.speaker.beep(440)
@@ -165,35 +162,34 @@ halfStep = 2.0 ** (1.0/12)
 
 # CODE BELOW
 
-val = 123.4500
-print(f"{val:g}")
 
 pixels = []
 
 ev3.screen.clear()
 
-loadingProgress = Decimal('0')
-LPIncreasePerRow = 0.78
+loadingProgress = 0
+LPIncreasePerIncrement = 100.0/177 + 0.0001
 
-for y in range(SCREENHEIGHT):
+for x in range(SCREENWIDTH):
     row = []
-    for x in range(SCREENWIDTH):
+    for y in range(SCREENHEIGHT):
         pixel = Pixel(x, y, Color.WHITE)
         row.append(pixel)
         
         ev3.screen.draw_pixel(x,y)
-        
-
+    
     row.append(y)
-    loadingProgress += LPIncreasePerRow
-    ev3.screen.print("loading...   " + loadingProgress + "%")
-#end loop
+    loadingProgress += LPIncreasePerIncrement
+    toPrint = str(loadingProgress)
+    ev3.screen.print("loading...   " + cutDecimal(toPrint,2) + "%")
+# end loop
 
-
+ev3.screen.clear()
+ev3.screen.print("\n\n           100%")
+drawScreenBorder()
+wait(500)
 
 clearScreen()
-
-ev3.screen.draw_box(1,1,SCREENWIDTH,SCREENHEIGHT,0,False)
 
 while True:
     pass
