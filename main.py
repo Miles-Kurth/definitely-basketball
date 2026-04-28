@@ -110,6 +110,17 @@ def touchingEdge(x,y):
         return True
     return False
 
+def drawRandomPixel():
+    x = random.randint(0,SCREENWIDTH)
+    y = random.randint(0,SCREENHEIGHT)
+    ev3.screen.draw_pixel(x,y,Color.BLACK)
+    ev3.screen.draw_box(1,1,SCREENWIDTH,SCREENHEIGHT,0,False)
+
+def eraseRandomPixel():
+    x = random.randint(0,SCREENWIDTH)
+    y = random.randint(0,SCREENHEIGHT)
+    ev3.screen.draw_pixel(x,y,Color.WHITE)
+    ev3.screen.draw_box(1,1,SCREENWIDTH,SCREENHEIGHT,0,False)
 
 # At start
 ev3.speaker.set_volume(40); #ev3.speaker.beep(660,200)
@@ -118,11 +129,17 @@ ev3.speaker.beep(440)
 
 # CODE BELOW
 
+pixels = []
+
 
 clearScreen()
-for y in range(PLAYBOUNDSY):
-    for x in range(PLAYBOUNDSX):
-        ev3.screen.draw_pixel(x,y)
+for y in range(SCREENHEIGHT):
+    row = []
+    for x in range(SCREENWIDTH):
+        ev3.screen.draw_pixel(x,y,Color.BLACK)
+        row.append(x)
+    row.append(y)
+#end loop
 
 clearScreen()
 
