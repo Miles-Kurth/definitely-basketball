@@ -149,7 +149,8 @@ while True:
     pass
 
 
-    
+#clear random pixels, try to avoid repeats
+#goal is efficiency
 
 
 
