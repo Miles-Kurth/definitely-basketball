@@ -6,16 +6,22 @@ from pybricks.parameters import Port,Stop
 from pybricks.tools import wait
 from pybricks.robotics import DriveBase
 from pybricks.iodevices import I2CDevice
+from pybricks.parameters import Color
+from decimal import *
 import time
 import sys
 import math
+import random
+
+
+ran = random
 
 
 class Pixel:
-    def __init__(self, x, y, color):
+    def __init__(self, x, y, colorIn):
         self.x = x
         self.y = y
-        self.color = color
+        self.color = colorIn
 
     def getX(self):
         return self.x
@@ -26,8 +32,8 @@ class Pixel:
     def getColor(self):
         return self.color
     
-    def setColor(color):
-        self.color = color
+    def setColor(colorIn):
+        self.color = colorIn
 
 
 # Initialize the EV3 Brick.
@@ -49,15 +55,17 @@ PLAYBOUNDSY = SCREENHEIGHT - 1
 
 
 
-def run():
-    motor1.dc(-speed)
-    motor2.dc(speed)
 
-def brake():
-    motor1.brake()
-    motor2.brake()
 
 def fan():
+    def run():
+        motor1.dc(-speed)
+        motor2.dc(speed)
+
+    def brake():
+        motor1.brake()
+        motor2.brake()
+    
     speed = 7
     while True:
         if (speed > 100):
@@ -74,6 +82,16 @@ def fan():
                 speed = 7
                 brake()    
 
+
+
+def cutDecimal(num, keepPlaces):
+    s = "0." 
+    for i in range(keepPlaces):
+        s += "0"
+    s += "1"
+
+    num2 = num - (num % float(s))
+    return num2
 
 
 def clearScreen():
@@ -120,22 +138,23 @@ def touchingEdge(x,y):
     return False
 
 
-def drawPixel(): # to black
+def getRandomPixel():
     x = random.randint(0,SCREENWIDTH)
     y = random.randint(0,SCREENHEIGHT)
-    pixels[y][x].setColor(Color.BLACK)
-    drawScreenBorder()
+    pixel = pixels[y][x]
+    return pixel
 
-def erasePixel(): # to white
-    x = random.randint(0,SCREENWIDTH)
-    y = random.randint(0,SCREENHEIGHT)
-    pixels[y][x].setColor(Color.WHITE)
-    drawScreenBorder()
+def drawPixel(pixel): # to black
+    pixel.setColor(Color.BLACK)
+
+def erasePixel(pixel): # to white
+    pixel.setColor(Color.WHITE)
+
 def togglePixel(pixel):
     if (pixel.getColor() == Color.WHITE):
-        pixel.setColor(Color.WHITE)
+        pixel.setColor(Color.BLACK)
     else:
-        puxel.setColor(Color.BLACK)
+        pixel.setColor(Color.WHITE)
 
 
 # At start
@@ -146,24 +165,31 @@ halfStep = 2.0 ** (1.0/12)
 
 # CODE BELOW
 
+val = 123.4500
+print(f"{val:g}")
+
 pixels = []
 
 ev3.screen.clear()
-ev3.screen.print("loading...")
 
-loadingPitch = 250
-
+loadingProgress = Decimal('0')
+LPIncreasePerRow = 0.78
 
 for y in range(SCREENHEIGHT):
     row = []
     for x in range(SCREENWIDTH):
-        ev3.screen.draw_pixel(x,y,Color.BLACK)
         pixel = Pixel(x, y, Color.WHITE)
         row.append(pixel)
-        loadingPitch += halfStep / (SCREENWIDTH/2)
+        
+        ev3.screen.draw_pixel(x,y)
+        
+
     row.append(y)
-    loadingPitch += halfStep * 5
+    loadingProgress += LPIncreasePerRow
+    ev3.screen.print("loading...   " + loadingProgress + "%")
 #end loop
+
+
 
 clearScreen()
 
