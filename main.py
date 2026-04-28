@@ -11,19 +11,23 @@ import sys
 import math
 
 
-class LaserSensor:
-    def __init__(self, port):
-        self.i2c = I2CDevice(port, 0x02 >> 1)
-        self.last_time = 0
-        self.last_dist = 0
+class Pixel:
+    def __init__(self, x, y, color):
+        self.x = x
+        self.y = y
+        self.color = color
 
-    def distance(self):
-        now = time.time()
-        if now - self.last_time > 0.03:
-            self.last_time = now
-            results = self.i2c.read(0x42, 2)
-            self.last_dist = results[0] + (results[1] << 8)
-        return self.last_dist
+    def getX(self):
+        return self.x
+    
+    def getY(self):
+        return self.y
+    
+    def getColor(self):
+        return self.color
+    
+    def setColor(color):
+        self.color = color
 
 
 # Initialize the EV3 Brick.
@@ -43,7 +47,7 @@ SCREENHEIGHT = 127
 PLAYBOUNDSX = SCREENWIDTH - 1
 PLAYBOUNDSY = SCREENHEIGHT - 1
 
-speed = 7
+
 
 def run():
     motor1.dc(-speed)
@@ -54,6 +58,7 @@ def brake():
     motor2.brake()
 
 def fan():
+    speed = 7
     while True:
         if (speed > 100):
             speed = 100
@@ -73,6 +78,10 @@ def fan():
 
 def clearScreen():
     ev3.screen.clear()
+    drawScreenBorder()
+
+def drawScreenBorder():
+    ev3.screen.draw_box(1,1,SCREENWIDTH,SCREENHEIGHT,0,False)
 
 
 def touchingLeft(x,y):
@@ -110,34 +119,46 @@ def touchingEdge(x,y):
         return True
     return False
 
-def drawRandomPixel():
+
+def drawPixel(): # to black
     x = random.randint(0,SCREENWIDTH)
     y = random.randint(0,SCREENHEIGHT)
     ev3.screen.draw_pixel(x,y,Color.BLACK)
     ev3.screen.draw_box(1,1,SCREENWIDTH,SCREENHEIGHT,0,False)
 
-def eraseRandomPixel():
+def erasePixel(): # to white
     x = random.randint(0,SCREENWIDTH)
     y = random.randint(0,SCREENHEIGHT)
     ev3.screen.draw_pixel(x,y,Color.WHITE)
     ev3.screen.draw_box(1,1,SCREENWIDTH,SCREENHEIGHT,0,False)
 
+def togglePixel(pixel):
+    if (pixel.getColor() == Color.WHITE):
+        pixel.setColor(Color.WHITE)
+    else:
+        puxel.setColor(Color.BLACK)
+
+
 # At start
 ev3.speaker.set_volume(40); #ev3.speaker.beep(660,200)
 ev3.speaker.beep(440)
+halfStep = 2.0 ** (1.0/12)
 
 
 # CODE BELOW
 
 pixels = []
 
+ev3.screen.clear()
+ev3.screen.print("loading...")
 
-clearScreen()
+
 for y in range(SCREENHEIGHT):
     row = []
     for x in range(SCREENWIDTH):
         ev3.screen.draw_pixel(x,y,Color.BLACK)
-        row.append(x)
+        pixel = Pixel(x, y, Color.WHITE)
+        row.append(pixel)
     row.append(y)
 #end loop
 
