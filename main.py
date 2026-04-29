@@ -31,8 +31,8 @@ class Pixel:
     def getColor(self):
         return self.color
     
-    def setColor(colorIn):
-        self.color = colorIn
+    def setColor(colorNew):
+        self.color = colorNew
 
 
 # Initialize the EV3 Brick.
@@ -43,7 +43,8 @@ motor1 = Motor(Port.A)
 motor2 = Motor(Port.B)
 
 # Initialize sensors
-button = TouchSensor(Port.S1)
+fanButton = TouchSensor(Port.S4)
+pongButton = TouchSensor(Port.S1)
 
 
 
@@ -60,11 +61,11 @@ def fan():
     def run():
         motor1.dc(-speed)
         motor2.dc(speed)
-
     def brake():
         motor1.brake()
         motor2.brake()
-    
+    ev3.screen.clear()
+    ev3.screen.print("\ndon't worry\n   about it")
     speed = 7
     while True:
         if (speed > 100):
@@ -73,7 +74,7 @@ def fan():
 
         run()
 
-        if (button.pressed()):
+        if (fanButton.pressed()):
             speed += 0.03 + (speed *0.001)
         else:
             speed += -0.2
@@ -134,23 +135,32 @@ def touchingEdge(x,y):
     return False
 
 
+def makePixel(x,y):
+    pixel = Pixel(x, y, Color.WHITE)
+    return pixel
+
 def getRandomPixel():
-    x = random.randint(0,SCREENWIDTH)
-    y = random.randint(0,SCREENHEIGHT)
+    x = random.randint(0,SCREENWIDTH-1)
+    y = random.randint(0,SCREENHEIGHT-1)
     pixel = pixels[y][x]
     return pixel
 
-def drawPixel(pixel): # to black
-    pixel.setColor(Color.BLACK)
+def drawPixel(x,y): # to black
+    pixel = Pixel(x, y, Color.BLACK)
+    pixels[y][x] = pixel
+    ev3.screen.draw_pixel(x,y,Color.BLACK)
 
-def erasePixel(pixel): # to white
-    pixel.setColor(Color.WHITE)
+def erasePixel(x,y): # to white
+    pixel = Pixel(x, y, Color.WHITE)
+    pixels[y][x] = pixel
+    ev3.screen.draw_pixel(x,y,Color.WHITE)
 
-def togglePixel(pixel):
-    if (pixel.getColor() == Color.WHITE):
-        pixel.setColor(Color.BLACK)
+def togglePixel(x,y):
+    print(pixels[y][x].getColor())
+    if (pixels[y][x].getColor() == Color.WHITE):
+        drawPixel(x,y)
     else:
-        pixel.setColor(Color.WHITE)
+        erasePixel(x,y)
 
 
 
@@ -162,37 +172,76 @@ halfStep = 2.0 ** (1.0/12)
 
 # CODE BELOW
 
+ev3.screen.print("\nred button for fan")
+ev3.screen.print("\nblack button\nfor pong")
+while True:
+    if fanButton.pressed():
+        fan()
+        sys.exit()
+    if pongButton.pressed():
+        break
+    wait(1)
 
-pixels = []
+
 
 ev3.screen.clear()
 
-loadingProgress = 0
-LPIncreasePerIncrement = 100.0/177 + 0.0001
+ev3.screen.print("\n\n        loading...")
 
-for x in range(SCREENWIDTH):
-    row = []
-    for y in range(SCREENHEIGHT):
-        pixel = Pixel(x, y, Color.WHITE)
-        row.append(pixel)
+pixels = [[makePixel(x,y) for x in range(SCREENWIDTH+1)] for y in range(SCREENHEIGHT+1)]
+
+
+
+loadingProgress = 0
+LPIncreasePerIncrement = 100.0/127 + 0.0001
+
+# for y in range(SCREENHEIGHT):
+#     # row = []
+
+#     for x in range(SCREENWIDTH):
         
-        ev3.screen.draw_pixel(x,y)
+#         row.append(pixel)
+        
+#         ev3.screen.draw_pixel(x,y)
     
-    row.append(y)
-    loadingProgress += LPIncreasePerIncrement
-    toPrint = str(loadingProgress)
-    ev3.screen.print("loading...   " + cutDecimal(toPrint,2) + "%")
+#         pixels[y][x] = 
+
+#     loadingProgress += LPIncreasePerIncrement
+#     toPrint = str(loadingProgress)
+#     ev3.screen.print("loading...   " + cutDecimal(toPrint,2) + "%")
+
 # end loop
 
 ev3.screen.clear()
 ev3.screen.print("\n\n           100%")
 drawScreenBorder()
+
+wait(500)
+
+for i in range(1):
+    y = len(pixels)
+    x = len(pixels[y-1])
+    print("height=" + str(y) + " " + "width=" + str(x) )
+    print("max Y=" + str(y-1) + " " + "max X=" + str(x-1) )
+
+for i in range(5000):
+    y = random.randint(38,89)
+    x = random.randint(38,139)
+    togglePixel(x,y)
+
+
 wait(500)
 
 clearScreen()
 
-while True:
+
+def periodic():
     pass
+
+while True:
+    periodic()
+    pass
+
 
 
 #clear random pixels, try to avoid repeats
