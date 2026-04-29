@@ -65,6 +65,9 @@ def fan():
         motor1.brake()
         motor2.brake()
     ev3.screen.clear()
+    ev3.screen.print("\n\n            FAN")
+    wait(500)
+    clearScreen()
     ev3.screen.print("\ndon't worry\n   about it")
     speed = 7
     while True:
@@ -224,23 +227,25 @@ for i in range(1):
     print("height=" + str(y) + " " + "width=" + str(x) )
     print("max Y=" + str(y-1) + " " + "max X=" + str(x-1) )
 
-for i in range(5000):
-    y = random.randint(38,89)
-    x = random.randint(38,139)
-    togglePixel(x,y)
+# for i in range(5000):
+#     y = random.randint(38,89)
+#     x = random.randint(38,139)
+#     togglePixel(x,y)
 
-
-wait(500)
+# wait(500)
 
 clearScreen()
 
+wait(1000)
 
-def periodic():
-    pass
+ev3.screen.print("\n\n           Sike")
 
-while True:
-    periodic()
-    pass
+for i in range(5000):
+    y = random.randint(0,SCREENHEIGHT)
+    x = random.randint(0,SCREENWIDTH)
+    togglePixel(x,y)
+
+fan()
 
 
 
