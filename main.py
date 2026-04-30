@@ -11,7 +11,6 @@ import time
 import sys
 import math
 import random
-from random import betavariate
 
 
 ran = random
@@ -166,7 +165,8 @@ def togglePixel(x,y):
     else:
         erasePixel(x,y)
 
-
+def beta(num):
+    return num * (1 - num) * 6
 
 # At start
 ev3.speaker.set_volume(40); #ev3.speaker.beep(660,200)
@@ -241,12 +241,30 @@ wait(1000)
 
 ev3.screen.print("\n\n           Sike")
 
-for i in range(5000):
-    y = random.betavariate(2,2)
-    print(y)
+for i in range(5000): #DOESN"T WORK
+    y = -1
+    y = random.random()
+    y = y * (1 - y) * 6
+
+    x = -1
+    x = random.random()
+    x = x * (1 - x) * 6
+    
+    y *= SCREENHEIGHT
+    x *= SCREENWIDTH
+
+    if (y < 0 or y > SCREENHEIGHT or x < 0 or x > SCREENWIDTH):
+        i -= 1
+        continue
+
+    y = int(y)
+    x = int(x)
+
     # y = random.randint(0,SCREENHEIGHT)
     # x = random.randint(0,SCREENWIDTH)
-    # togglePixel(x,y)
+    togglePixel(x,y)
+
+wait(500)
 
 fan()
 
