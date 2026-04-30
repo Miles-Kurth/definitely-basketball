@@ -11,6 +11,7 @@ import time
 import sys
 import math
 import random
+from random import betavariate
 
 
 ran = random
@@ -68,12 +69,12 @@ def fan():
     ev3.screen.print("\n\n            FAN")
     wait(500)
     clearScreen()
-    ev3.screen.print("\ndon't worry\n   about it")
+    ev3.screen.print("\n       don't worry\n          about it")
     speed = 7
     while True:
         if (speed > 100):
             speed = 100
-        print(speed)
+        # print(speed)
 
         run()
 
@@ -221,7 +222,7 @@ drawScreenBorder()
 
 wait(500)
 
-for i in range(1):
+for i in range(1): #check array is filled, runs ONCE
     y = len(pixels)
     x = len(pixels[y-1])
     print("height=" + str(y) + " " + "width=" + str(x) )
@@ -241,9 +242,11 @@ wait(1000)
 ev3.screen.print("\n\n           Sike")
 
 for i in range(5000):
-    y = random.randint(0,SCREENHEIGHT)
-    x = random.randint(0,SCREENWIDTH)
-    togglePixel(x,y)
+    y = random.betavariate(2,2)
+    print(y)
+    # y = random.randint(0,SCREENHEIGHT)
+    # x = random.randint(0,SCREENWIDTH)
+    # togglePixel(x,y)
 
 fan()
 
