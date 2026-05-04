@@ -159,14 +159,18 @@ def erasePixel(x,y): # to white
     ev3.screen.draw_pixel(x,y,Color.WHITE)
 
 def togglePixel(x,y):
-    print(pixels[y][x].getColor())
+    # print(pixels[y][x].getColor())
     if (pixels[y][x].getColor() == Color.WHITE):
         drawPixel(x,y)
     else:
         erasePixel(x,y)
 
-def beta(num):
-    return num * (1 - num) * 6
+def normalDist(num):
+    v = 0.13
+    frac = 1/3.06879
+    term1 = 1/(math.sqrt((2 * math.pi) * v**2) )
+    term2 = math.e ** (-((num - 0.5)**2) / (2 * (v**2)) )
+    return frac * term1 * term2
 
 # At start
 ev3.speaker.set_volume(40); #ev3.speaker.beep(660,200)
@@ -175,6 +179,9 @@ halfStep = 2.0 ** (1.0/12)
 
 
 # CODE BELOW
+
+ev3.screen.clear()
+
 
 ev3.screen.print("\nred button for fan")
 ev3.screen.print("\nblack button\nfor pong")
@@ -241,28 +248,30 @@ wait(1000)
 
 ev3.screen.print("\n\n           Sike")
 
-for i in range(5000): #DOESN"T WORK
-    y = -1
-    y = random.random()
-    y = y * (1 - y) * 6
 
-    x = -1
+for i in range(3000): #DOESN'T WORK
+
+    y = random.random()
+    # y = y * (1 - y) * 4
+    y = normalDist(y)
+    # y = random.randint(int(SCREENHEIGHT/2 - 5), int(SCREENHEIGHT/2 + 5))
+
+    
     x = random.random()
-    x = x * (1 - x) * 6
+    # x = x * (1 - x) * 4
+    x = normalDist(x)
     
     y *= SCREENHEIGHT
     x *= SCREENWIDTH
 
-    if (y < 0 or y > SCREENHEIGHT or x < 0 or x > SCREENWIDTH):
-        i -= 1
-        continue
 
     y = int(y)
     x = int(x)
 
+    print(str(x) + " " + str(y))
     # y = random.randint(0,SCREENHEIGHT)
     # x = random.randint(0,SCREENWIDTH)
-    togglePixel(x,y)
+    drawPixel(x,y)
 
 wait(500)
 
